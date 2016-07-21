@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MCX_1 {
+
+   private long max = 9223372036854775807;
    
    public static void main(String[] args) {
    
@@ -16,6 +18,8 @@ public class MCX_1 {
       frame.getContentPane().setBackground(Color.LIGHT_GRAY);
       
       frame.setVisible(true);
+      
+     
       
    }
 

@@ -60,12 +60,12 @@ public class MCX_0 extends JPanel  {
    
    private void generate() {
    
-      int[] seedBuilder = new int[10];  
+      long[] seedBuilder = new long[4];  
    
       String clientSeed = seedField.getText(); 
       if (clientSeed.equals("")) clientSeed = String.valueOf(System.currentTimeMillis());
                            
-      seedBuilder[0] = clientSeed.hashCode();                        // 0 = Seed hash
+      seedBuilder[0] = (long)clientSeed.hashCode();                        // 0 = Seed hash
       
       seedBuilder[1] = clientSeed.substring(0,1).hashCode();         // 1 = Seed-primary hash
       seedBuilder[1] = 500 - seedBuilder[1];                         // 1 = Adjusted seed-primary hash
@@ -73,15 +73,10 @@ public class MCX_0 extends JPanel  {
       seedBuilder[2] = seedBuilder[0] * seedBuilder[1];              // 2 = Seed hash * adjusted seed-primary hash
       seedBuilder[2] = Math.abs(seedBuilder[2]);                     // 2 = Made positive
       
-      while(String.valueOf(seedBuilder[2]).length() < 10) {
-      
-         if (seedBuilder[2] > 200000000)
-         
-         seedBuilder[2] = Integer.parseInt(String.valueOf(seedBuilder[2]) + "7");  
-      }
+      seedBuilder[3] = (long)Math.pow(seedBuilder[2],1.4);
       
       p(clientSeed);
-      p(seedBuilder[2]);
+      p(seedBuilder[3]);
    
    }
    
