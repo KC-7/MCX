@@ -78,15 +78,16 @@ public class MCX_0 extends JPanel  {
       // Absolute value             
       seedBuilder[2] = Math.abs(seedBuilder[1]);                     
       
-      // Raised to the 1.29
-      seedBuilder[3] = (long)(Math.pow(seedBuilder[2], 1.29));
+      // Raised to the 1.27
+      seedBuilder[3] = (long)(Math.pow(seedBuilder[2], 1.27));
       
       // Multiplied by 10.1 until digits = 19
-      seedBuilder[4] = (long)(Math.pow(10.3,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
+      seedBuilder[4] = (long)(Math.pow(10.23,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
       
       p(clientSeed);
       p(seedBuilder[4]);
-      if (Long.MAX_VALUE - seedBuilder[4] < new Long("223372036854775807")) p(true);
+      if (Long.MAX_VALUE - seedBuilder[4] < new Long("223372036854775807")) 
+         p(true);
    
    }
    
