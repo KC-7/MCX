@@ -64,34 +64,29 @@ public class MCX_0 extends JPanel  {
    
       String clientSeed = seedField.getText(); 
       if (clientSeed.equals("")) clientSeed = String.valueOf(System.currentTimeMillis());
-                           
-      seedBuilder[0] = (long)clientSeed.hashCode();                  // 0 = Seed hash
       
-      seedBuilder[1] = clientSeed.substring(0,1).hashCode();         // 1 = Seed-primary hash
-      seedBuilder[1] = 500 - seedBuilder[1];                         // 1 = Adjusted seed-primary hash
       
-      seedBuilder[2] = seedBuilder[0] * seedBuilder[1];              // 2 = Seed hash * adjusted seed-primary hash
-      seedBuilder[2] = Math.abs(seedBuilder[2]);                     // 2 = Made positive
+      // Basic hash of seed                     
+      seedBuilder[0] = (long)clientSeed.hashCode();                  
       
-      seedBuilder[3] = Integer.parseInt(String.valueOf(seedBuilder[2]).substring(1,2));
-      //seedBuilder[3] = (long)Math.pow(seedBuilder[2], 1 +(Integer.parseInt(String.valueOf(seedBuilder[2]).substring(1,2))/10));
+      // primary-char hash * concluding-char hash
+      long comboID = clientSeed.substring(0,1).hashCode() * clientSeed.substring(clientSeed.length()-1).hashCode();                         
       
-      seedBuilder[4] = seedBuilder[3];
-      /*while (String.valueOf(seedBuilder[4]).length() != 17) {
+      // Basic hash * comboID
+      seedBuilder[1] = seedBuilder[0] * comboID; 
       
-         if (String.valueOf(seedBuilder[4]).length() < 17) {
-            
-            seedBuilder[4] *= 1.3;
-            
-         } else {
-            
-            seedBuilder[4] *= 0.97;   
-         }   
-      }*/
+      // Absolute value             
+      seedBuilder[2] = Math.abs(seedBuilder[1]);                     
+      
+      // Raised to the 1.29
+      seedBuilder[3] = (long)(Math.pow(seedBuilder[2], 1.29));
+      
+      // Multiplied by 10.1 until digits = 19
+      seedBuilder[4] = (long)(Math.pow(10.3,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
       
       p(clientSeed);
       p(seedBuilder[4]);
-      p("32159307615668708");
+      if (Long.MAX_VALUE - seedBuilder[4] < new Long("223372036854775807")) p(true);
    
    }
    
