@@ -7,6 +7,9 @@ public class MCX_0 extends JPanel  {
    private JButton generateButton;
    private JLabel seedLabel, display;
    private JTextField seedField;
+   
+   private String seed;
+   private long root;
 
    public MCX_0() {
       
@@ -61,19 +64,28 @@ public class MCX_0 extends JPanel  {
    
    private void generate() {
    
-      String seed = seedField.getText();
-      if (seed.equals("")) seed = String.valueOf(System.currentTimeMillis());
-      if (isInteger(seed)) seed = String.valueOf(seed.hashCode());
+      seed = seedField.getText();
+      
+      if (seed.equals("")) {
+         long time = System.currentTimeMillis();
+         seed = String.valueOf(time);
+         
+      } else if (!isInteger(seed)) {
+         seed = String.valueOf(seed.hashCode());
+      }   
       
       try {
          HX h = new HX(seed);
-         System.out.println(h.getHash());
+         root = h.getHash();
       } 
       catch(Exception e) {
          System.out.println("WARN -- " + e);
       }   
+      
+      System.out.println(seed + " > " + root);
    }
    
+   /*
    private void generateOld() {
    
       long[] seedBuilder = new long[5];  
@@ -103,9 +115,8 @@ public class MCX_0 extends JPanel  {
       p(seedBuilder[4]);
       if (Long.MAX_VALUE - seedBuilder[4] < new Long("10")) 
          p(true);
-   
    }
-   
+   */
    
    private class Listener implements ActionListener {  
       private String ID;
@@ -131,13 +142,13 @@ public class MCX_0 extends JPanel  {
       System.out.println(o);
    }
    
-   public boolean isInteger(String input) {
+   private boolean isInteger(String input) {
       try {
-         Integer.parseInt( input );
+         Integer.parseInt(input);
          return true;
-      }
-      catch( Exception e ) {
+      } catch(Exception e) {
          return false;
       }
    }
+           
 }
