@@ -3,11 +3,11 @@ import java.awt.*;
 
 public class MCX_1 {
 
-   // Max       > +922 3372 0368 5477 5807 -- 19 digits -- 9223372036854775807
+   // Max       > 9223372036854775807
    
-   // default   > -907 9299 6425 5080 3009.................-9079299642550803009
+   // default   > 6144396489148580666
    
-   // Time      > ........1 4691 3923 5142 -- 13 digits
+   // Time      > 1469139235142 -- 13 digits
    
    public static void main(String[] args) {
    

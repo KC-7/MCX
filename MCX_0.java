@@ -28,6 +28,7 @@ public class MCX_0 extends JPanel  {
       
       this.add(panel_button, BorderLayout.NORTH);
       this.add(panel_seed, BorderLayout.WEST);
+      
           
    }     
       
@@ -69,66 +70,42 @@ public class MCX_0 extends JPanel  {
       if (seed.equals("")) {
          long time = System.currentTimeMillis();
          seed = String.valueOf(time);
-         
-      } else if (!isInteger(seed)) {
+      } else if (isString(seed)) {
          seed = String.valueOf(seed.hashCode());
       }   
       
       try {
          HX h = new HX(seed);
          root = h.getHash();
-      } 
-      catch(Exception e) {
-         System.out.println("WARN -- " + e);
+      } catch(Exception e) {
+         p("WARN -- " + e);
       }   
       
-      System.out.println(seed + " > " + root);
+      if (String.valueOf(root).length() < 19) {
+         String st = String.valueOf(Math.abs(root));
+         
+         int i = 5;
+         String digit = st.substring(i, i+1);
+         while (digit.equals("0") || digit.equals("9")) {
+            i++;
+            digit = st.substring(i, i+1);
+         }
+         st = digit + st;
+         root = (Long.parseLong(st) *  (root/Math.abs(root)));
+      }   
+      
+      p(seed);
+      p(root);
    }
    
-   /*
-   private void generateOld() {
-   
-      long[] seedBuilder = new long[5];  
-   
-      String clientSeed = seedField.getText(); 
-      if (clientSeed.equals("")) clientSeed = String.valueOf(System.currentTimeMillis());
-      
-      // Basic hash of seed                     
-      seedBuilder[0] = (long)clientSeed.hashCode();                  
-      
-      // comboID = primary-char hash * concluding-char hash
-      long comboID = clientSeed.substring(0,1).hashCode() * clientSeed.substring(clientSeed.length()-1).hashCode();                         
-      
-      // Basic hash * comboID
-      seedBuilder[1] = seedBuilder[0] * comboID; 
-      
-      // Absolute value             
-      seedBuilder[2] = Math.abs(seedBuilder[1]);                     
-      
-      // Raised to the 1.27
-      seedBuilder[3] = (long)(Math.pow(seedBuilder[2], 1.27));
-      
-      // Multiplied by 9.9 until digits = 19
-      seedBuilder[4] = (long)(Math.pow(9.9,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
-      
-      p(clientSeed);
-      p(seedBuilder[4]);
-      if (Long.MAX_VALUE - seedBuilder[4] < new Long("10")) 
-         p(true);
-   }
-   */
-   
+     
    private class Listener implements ActionListener {  
       private String ID;
-   
       private Listener(String ID) {
-         
          this.ID = ID;
       }   
-   
       @Override
       public void actionPerformed(ActionEvent e) {
-      
          switch(ID) { 
             case "generateButton":
                generate();
@@ -142,13 +119,24 @@ public class MCX_0 extends JPanel  {
       System.out.println(o);
    }
    
-   private boolean isInteger(String input) {
+   private boolean isString(String input) {
+      boolean isInt;
+      boolean isLong;
       try {
          Integer.parseInt(input);
-         return true;
+         isInt = true;
       } catch(Exception e) {
-         return false;
+         isInt = false;
       }
+      
+      try {
+         Long.parseLong(input);
+         isLong = true;
+      } catch(Exception e) {
+         isLong = false; 
+      }
+      
+      return (!isInt && !isLong);   
    }
            
 }
