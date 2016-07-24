@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class MCX_0 extends JPanel  {
 
    private JButton generateButton;
-   private JLabel seedLabel;
+   private JLabel seedLabel, display;
    private JTextField seedField;
 
    public MCX_0() {
@@ -57,19 +57,34 @@ public class MCX_0 extends JPanel  {
       
       return seedField;   
    }
+     
    
    private void generate() {
+   
+      String seed = seedField.getText();
+      if (seed.equals("")) seed = String.valueOf(System.currentTimeMillis());
+      if (isInteger(seed)) seed = String.valueOf(seed.hashCode());
+      
+      try {
+         HX h = new HX(seed);
+         System.out.println(h.getHash());
+      } 
+      catch(Exception e) {
+         System.out.println("WARN -- " + e);
+      }   
+   }
+   
+   private void generateOld() {
    
       long[] seedBuilder = new long[5];  
    
       String clientSeed = seedField.getText(); 
       if (clientSeed.equals("")) clientSeed = String.valueOf(System.currentTimeMillis());
       
-      
       // Basic hash of seed                     
       seedBuilder[0] = (long)clientSeed.hashCode();                  
       
-      // primary-char hash * concluding-char hash
+      // comboID = primary-char hash * concluding-char hash
       long comboID = clientSeed.substring(0,1).hashCode() * clientSeed.substring(clientSeed.length()-1).hashCode();                         
       
       // Basic hash * comboID
@@ -81,12 +96,12 @@ public class MCX_0 extends JPanel  {
       // Raised to the 1.27
       seedBuilder[3] = (long)(Math.pow(seedBuilder[2], 1.27));
       
-      // Multiplied by 10.1 until digits = 19
-      seedBuilder[4] = (long)(Math.pow(10.23,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
+      // Multiplied by 9.9 until digits = 19
+      seedBuilder[4] = (long)(Math.pow(9.9,(19-(seedBuilder[3]+"").length())) * seedBuilder[3]);
       
       p(clientSeed);
       p(seedBuilder[4]);
-      if (Long.MAX_VALUE - seedBuilder[4] < new Long("223372036854775807")) 
+      if (Long.MAX_VALUE - seedBuilder[4] < new Long("10")) 
          p(true);
    
    }
@@ -103,16 +118,26 @@ public class MCX_0 extends JPanel  {
       @Override
       public void actionPerformed(ActionEvent e) {
       
-         if(ID.equals("generateButton")) {
-            generate();
-            
-         
+         switch(ID) { 
+            case "generateButton":
+               generate();
+               break;
          }
       }
    } 
    
    private void p(Object o) {
-      o = (String)(o+"");
+      o = o+"";
       System.out.println(o);
+   }
+   
+   public boolean isInteger(String input) {
+      try {
+         Integer.parseInt( input );
+         return true;
+      }
+      catch( Exception e ) {
+         return false;
+      }
    }
 }
