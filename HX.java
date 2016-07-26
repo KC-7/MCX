@@ -7,7 +7,6 @@ public class HX {
    final long hash;
    
    public HX(String s) throws NoSuchAlgorithmException {
-   
       seed = s;
       md = MessageDigest.getInstance("MD5");
       hash = computeHash();

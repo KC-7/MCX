@@ -5,83 +5,80 @@ import java.awt.event.*;
 public class MCX_0 extends JPanel  {
 
    private JButton generateButton;
-   private JLabel seedLabel, display;
+   private JLabel seedLabel;
    private JTextField seedField;
+   private JPanel gameFrame;
+
+   private JLabel[][] grid;
    
    private String seed;
    private long root;
+   private Object[] tree;
+   
+   // T1
 
    public MCX_0() {
-      
-      this.setLayout(new BorderLayout());
    
-      JPanel panel_button = new JPanel();
-      panel_button.setBackground(Color.LIGHT_GRAY);
+      this.setLayout(new FlowLayout());
       
-      panel_button.add(form_generateButton());     
-      
-      JPanel panel_seed = new JPanel();
-      panel_seed.setBackground(Color.LIGHT_GRAY);
-      
-      panel_seed.add(form_seedLabel());
-      panel_seed.add(form_seedField());
-      
-      this.add(panel_button, BorderLayout.NORTH);
-      this.add(panel_seed, BorderLayout.WEST);
-      
-          
-   }     
-      
-   
-   private JComponent form_generateButton() {
       generateButton = new JButton("Generate"); 
-      generateButton.setPreferredSize(new Dimension(450,30));
+      generateButton.setPreferredSize(new Dimension(450,40));  
+      generateButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               createRoot();
+               createWorld();
+               renderWorld();
+            }});
+         
+      seedLabel = new JLabel("Seed:");
+          
+      seedField = new JTextField("default");
+      seedField.setPreferredSize(new Dimension(100,20));
+      seedField.addKeyListener(
+         new KeyAdapter() {
+            public void keyTyped(KeyEvent e) { 
+               if (seedField.getText().length() >= 14 )
+                  e.consume(); 
+            }});
       
-      generateButton.setFont(new Font("Sans Serif", Font.PLAIN, 14));
-      generateButton.setBackground(Color.LIGHT_GRAY);
+      gameFrame = new JPanel(true);
+      gameFrame.setPreferredSize(new Dimension(448,224));
+      gameFrame.setLayout(new GridLayout(28,14));
+      gameFrame.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
       
-      generateButton.addActionListener(new Listener("generateButton"));   
+      grid = new JLabel[28][14];
       
-      return generateButton;  
-   }
+      for (JLabel[] row : grid) {
+         for (JLabel cell : row) {
+            cell = new JLabel();
+            gameFrame.add(cell);
+         }   
+      }
+           
+      this.add(generateButton);
+      this.add(seedLabel);
+      this.add(seedField);   
+      this.add(gameFrame);     
+   } 
    
-   private JComponent form_seedLabel() {  
-      seedLabel = new JLabel("   Seed:  ");
+   // T2    
       
-      seedLabel.setFont(new Font("Sans Serif", Font.PLAIN, 14));
-      
-      return seedLabel;  
-   }
-   
-   private JComponent form_seedField() {   
-      seedField = new JTextField("default", 15);
-      seedField.setHorizontalAlignment(SwingConstants.RIGHT);
-      
-      seedField.setFont(new Font("Sans Serif", Font.PLAIN, 14));
-      
-      return seedField;   
-   }
-     
-   
-   private void generate() {
-   
+   private void createRoot() {
       seed = seedField.getText();
       
-      if (seed.equals("")) {
-         long time = System.currentTimeMillis();
-         seed = String.valueOf(time);
-      } else if (isString(seed)) {
-         seed = String.valueOf(seed.hashCode());
-      }   
+      if (seed.equals("")) seed = String.valueOf(System.currentTimeMillis());
+      else if (isString(seed)) seed = String.valueOf(seed.hashCode());
       
       try {
          HX h = new HX(seed);
          root = h.getHash();
-      } catch(Exception e) {
+      } 
+      catch(Exception e) {
          p("WARN -- " + e);
       }   
       
-      if (String.valueOf(root).length() < 19) {
+      if (String.valueOf(Math.abs(root)).length() < 19) {
          String st = String.valueOf(Math.abs(root));
          
          int i = 5;
@@ -92,30 +89,34 @@ public class MCX_0 extends JPanel  {
          }
          st = digit + st;
          root = (Long.parseLong(st) *  (root/Math.abs(root)));
-      }   
-      
+      }     
       p(seed);
       p(root);
    }
    
-     
-   private class Listener implements ActionListener {  
-      private String ID;
-      private Listener(String ID) {
-         this.ID = ID;
-      }   
-      @Override
-      public void actionPerformed(ActionEvent e) {
-         switch(ID) { 
-            case "generateButton":
-               generate();
-               break;
-         }
+   private void createWorld() {
+      tree = new Object[20];
+      boolean positive = root > 0;  
+      String stringRoot = String.valueOf(Math.abs(root));
+      int[] rootArray = stringRoot.chars().map(Character::getNumericValue).toArray();
+      
+      if (positive) tree[0] = "forest";   
+      else tree[0] = "plains";     
+   }
+   
+   private void renderWorld() {
+   
+      for (JLabel[] row : grid) {
+         for (JLabel cell : row) {
+            
+         }   
       }
-   } 
+   }
+   
+   // T3
    
    private void p(Object o) {
-      o = o+"";
+      o = String.valueOf(o);
       System.out.println(o);
    }
    
@@ -125,18 +126,19 @@ public class MCX_0 extends JPanel  {
       try {
          Integer.parseInt(input);
          isInt = true;
-      } catch(Exception e) {
+      } 
+      catch(Exception e) {
          isInt = false;
       }
       
       try {
          Long.parseLong(input);
          isLong = true;
-      } catch(Exception e) {
+      } 
+      catch(Exception e) {
          isLong = false; 
       }
-      
-      return (!isInt && !isLong);   
+      return !(isInt || isLong);   
    }
            
 }
