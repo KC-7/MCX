@@ -10,7 +10,7 @@ import javax.swing.*;
 public class MCX_1 {
    public static void main(String[] args) { 
       JFrame frame = new JFrame("MCX-Launcher");
-      frame.setSize(500,350);
+      frame.setSize(500, 350);
       frame.setLocationRelativeTo(null);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
       frame.setContentPane(new MCX_0());
