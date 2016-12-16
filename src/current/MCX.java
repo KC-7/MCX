@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -28,18 +27,15 @@ public class MCX {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				init();
+				final JFrame frame = new JFrame("MCX-Current");
+				frame.getContentPane().add(new MCXPanel());
+				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.setVisible(true);
 			}
 		});
-	}
-
-	private static void init() {
-		JFrame f = new JFrame("MCX-Current");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.getContentPane().add(new MCXPanel());
-		f.pack();
-		f.setLocationRelativeTo(null);
-		f.setVisible(true);
 	}
 
 }
@@ -47,12 +43,12 @@ public class MCX {
 class MCXPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
-
-	private final short WIDTH = 640;
-	private final short HEIGHT = 320;
-	private final short BLOCK_PIXELS = 16;
-	private final short WIDTH_BLOCKS = WIDTH / BLOCK_PIXELS;
-	private final short HEIGHT_BLOCKS = HEIGHT / BLOCK_PIXELS;
+	
+	private final int WIDTH = 1280;
+	private final int HEIGHT = 560;
+	private final int BLOCK_PIXELS = 16;
+	private final int WIDTH_BLOCKS = WIDTH / BLOCK_PIXELS;
+	private final int HEIGHT_BLOCKS = HEIGHT / BLOCK_PIXELS;
 
 	private final String IMG = "res/img/";
 	private final String CMD_GENERATE = "CMD_GENERATE";
@@ -62,11 +58,10 @@ class MCXPanel extends JPanel implements ActionListener {
 	private final int BIOME_GRASS = 0;
 	private final int BIOME_DESERT = 1;
 
-	private int blockX = 0;
-	private int blockY = 0;
+	private int column = 0;
 	private final ImageIcon[][] map = new ImageIcon[WIDTH_BLOCKS][HEIGHT_BLOCKS];
-	private JTextField seedField;
-	private final Timer paintTimer = new Timer(7, this);
+	private JTextField seed_input_field;
+	private final Timer paintTimer = new Timer(40, this);
 
 	private final JPanel main = new JPanel(true) {
 		private static final long serialVersionUID = 1L;
@@ -95,17 +90,16 @@ class MCXPanel extends JPanel implements ActionListener {
 		main.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
 		final JPanel top = new JPanel();
-		top.setLayout(new BoxLayout(top, BoxLayout.X_AXIS));
 		top.add(main);
-		top.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+		top.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-		final JLabel seedlabel = new JLabel("Seed:");
-		seedField = new JTextField("default", 8);
-		seedField.setActionCommand(CMD_GENERATE);
-		seedField.addActionListener(this);
+		final JLabel seed_input_label = new JLabel("Seed:");
+		seed_input_field = new JTextField("default", 8);
+		seed_input_field.setActionCommand(CMD_GENERATE);
+		seed_input_field.addActionListener(this);
 		final JPanel seedPanel = new JPanel();
-		seedPanel.add(seedlabel);
-		seedPanel.add(seedField);
+		seedPanel.add(seed_input_label);
+		seedPanel.add(seed_input_field);
 
 		final JButton genButton = new JButton("Generate");
 		genButton.setPreferredSize(new Dimension(130, 30));
@@ -127,11 +121,8 @@ class MCXPanel extends JPanel implements ActionListener {
 
 	private void cmdGenerate() {
 
-		blockX = 0;
-		blockY = 0;
-
-		writeMap(getStem(getRoot(seedField.getText())));
-
+		column = 0;
+		writeMap(getStem(getRoot(seed_input_field.getText())));
 		paintTimer.setActionCommand(CMD_PAINT);
 		paintTimer.start();
 
@@ -166,35 +157,18 @@ class MCXPanel extends JPanel implements ActionListener {
 	}
 
 	private void drawMap(Graphics2D g) {
-
-		if (blockY >= HEIGHT_BLOCKS) { // If row exceeds limit, reset it and go
-			// to next col
-			blockY = 0;
-			blockX++;
-		}
-
-		final int pos = blockX * WIDTH + blockY; // Compute the raw position
-
-		loops: for (int x = 0; x < map.length; x++) {
+		
+		// Reiterates through all previous columns (repaint() clears previous)
+		for (int x = 0; x < column; x++) {
 			for (int y = 0; y < map[0].length; y++) {
-
-				final int currentPos = x * HEIGHT + y;
-				if (currentPos > pos) { // If current raw position exceeds pos,
-					// stop drawing
-					break loops;
-				}
-
-				final Image img = map[x][y].getImage();
-				g.drawImage(img, BLOCK_PIXELS * x, BLOCK_PIXELS * y, this);
+				g.drawImage(map[x][y].getImage(), BLOCK_PIXELS * x, BLOCK_PIXELS * y, this);
 			}
 		}
-
-		if (blockX >= WIDTH_BLOCKS) { // If column exceeds limit, stop process
+		column++;
+		
+		if (column > WIDTH_BLOCKS) { 
 			paintTimer.stop();
-			return;
 		}
-
-		blockY++;
 
 	}
 
@@ -214,7 +188,12 @@ class MCXPanel extends JPanel implements ActionListener {
 
 		long seed = input.isEmpty() ? System.currentTimeMillis() : toSeed(input);
 		long root = new Random(seed).nextLong();
-		System.out.println(seed + " | " + root);
+		
+		// TODO remove when no longer needed
+		System.out.printf("%19d", seed);
+		System.out.print(" | ");
+		System.out.printf("%20d", root);
+		System.out.println();
 
 		return root;
 
