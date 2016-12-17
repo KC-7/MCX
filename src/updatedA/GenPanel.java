@@ -9,21 +9,18 @@ import javax.swing.JPanel;
 public class GenPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private final int BLOCK_PX = 16; // Pixels per block
-	private final int WIDTH_PX; // Numbers of pixels
-	private final int HEIGHT_PX; // Numbers of pixels	
-	
-	private enum Block {
-		SURFACE, INTERIOR
-	}
 	
 	private enum Biome {
-		GRASS, DESERT
+		GRASS, DESERT, TUNDRA;
 	}
+	
+	private final int BLOCK_PX = 16; 	// Pixels per block
+	private final int WIDTH_PX; 		// Numbers of pixels
+	private final int HEIGHT_PX; 		// Numbers of pixels
 
 	private long seed;
 	private int[] map;
+	private Biome biome;
 	private Block[][] world;
 
 	public GenPanel(int width, int height) {
@@ -44,6 +41,7 @@ public class GenPanel extends JPanel {
 
 		seed = terrainMapper.getSeed();
 		map = terrainMapper.getMap();
+		//biome = terrainMapper.getRandom().nex
 		writeWorld();
 		drawWorld();
 
@@ -70,7 +68,43 @@ public class GenPanel extends JPanel {
 	
 	private void refineWorld() {
 		
+		for (int x = 0; x < world.length; x++) {
+			
+			for (int y = 0; y < world[0].length; y++) {
+				
+				final Block block = world[x][y];
+				switch (block) {
+				case SURFACE:
+					refineSurface(block);
+					break;
+				case INTERIOR:
+					break;
+				default:
+					break;
+					
+				}
+				
+			}
+			
+		}
 		
+	}
+	
+	private void refineSurface(Block surfaceBlock) {
+		
+		switch(biome) {
+		case GRASS:
+			surfaceBlock = Block.GRASS;
+			break;
+		case DESERT:
+			surfaceBlock = Block.SAND;
+			break;
+		case TUNDRA:
+			break;
+		default:
+			break;
+		
+		}
 		
 	}
 

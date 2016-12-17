@@ -57,6 +57,10 @@ public class TerrainMapper {
 		return seed;
 	}
 	
+	public Random getRandom() {
+		return RANDOM;
+	}
+	
 	// Empty = current time, String = hash code, number = as entered
 	public static long getSeed(String input) {
 		return input.isEmpty() ? System.currentTimeMillis() : toSeed(input);
