@@ -36,7 +36,9 @@ class TerrainGenPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
 	private final String CMD_GENERATE = "CMD_GENERATE";
-	private final GenPanel genPanel = new GenPanel(80,35);
+	private final String CMD_LEFT = "CMD_LEFT"; 
+	private final String CMD_RIGHT = "CMD_RIGHT";
+	private final GenPanel genPanel = new GenPanel(80, 35);
 	private JTextField roughness_input_field;
 	private JTextField seed_input_field;
 
@@ -62,13 +64,14 @@ class TerrainGenPanel extends JPanel implements ActionListener {
 		
 	}
 	
-	// Vertical layout. Contains settings and generate button.
+	// Vertical layout. Contains settings, buttons, and generator.
 	private JPanel initBottom() {
 		
 		final JPanel bottom = new JPanel();
 		bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
 		bottom.add(initBottom_Settings());
-		bottom.add(initBottom_Generate());
+		bottom.add(initBottom_Buttons());
+		bottom.add(initBottom_Generator());
 		bottom.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 		
 		return bottom;
@@ -117,8 +120,43 @@ class TerrainGenPanel extends JPanel implements ActionListener {
 		
 	}
 	
+	// No layout. Contains left and right buttons.
+	private JPanel initBottom_Buttons() {
+		
+		final JPanel buttons = new JPanel();
+		buttons.add(initBottom_Buttons_Left());
+		buttons.add(initBottom_Buttons_Right());
+		
+		return buttons;
+		
+	}
+	
+	// No layout. Contains left button.
+	private JPanel initBottom_Buttons_Left() {
+		
+		final JPanel left = new JPanel();
+		final JButton button = new JButton("<--");
+		button.setActionCommand(CMD_LEFT);
+		button.addActionListener(this);
+		left.add(button);
+		
+		return left;
+	}
+	
+	// No layout. Contains right button.
+	private JPanel initBottom_Buttons_Right() {
+		
+		final JPanel right = new JPanel();
+		final JButton button = new JButton("-->");
+		button.setActionCommand(CMD_RIGHT);
+		button.addActionListener(this);
+		right.add(button);
+		
+		return right;
+	}
+	
 	// No layout. Contains generate button.
-	private JPanel initBottom_Generate() {
+	private JPanel initBottom_Generator() {
 		
 		final JPanel generator = new JPanel();
 		final JButton generateButton = new JButton("Generate Terrain");
@@ -136,9 +174,21 @@ class TerrainGenPanel extends JPanel implements ActionListener {
 		
 		final String cmd = ae.getActionCommand();
 		switch (cmd) {
+		case CMD_LEFT:
+			break;
+		case CMD_RIGHT:
+			break;
 		case CMD_GENERATE:
+			final int minFromTop = 3 * GenPanel.PX_PER_BLOCK;
+			final int maxFromTop = (genPanel.getRows() - 3) * GenPanel.PX_PER_BLOCK;
 			final double roughness = Double.parseDouble(roughness_input_field.getText());
-			genPanel.generate(new TerrainMapper(0, 1280, roughness, seed_input_field.getText(), 640, 640, 2000));
+			final String seed = seed_input_field.getText();
+			final int startVal = (genPanel.getRows() * GenPanel.PX_PER_BLOCK) / 2;
+			final int endVal = startVal;
+			genPanel.generate(new TerrainMapper(minFromTop, maxFromTop, roughness, seed, startVal, endVal, 2000));
+			break;
+		default:
+			throw new AssertionError(cmd);
 		}
 		
 	}

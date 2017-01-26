@@ -61,7 +61,7 @@ class MCXPanel extends JPanel implements ActionListener {
 	private int column = 0;
 	private final ImageIcon[][] map = new ImageIcon[WIDTH_BLOCKS][HEIGHT_BLOCKS];
 	private JTextField seed_input_field;
-	private final Timer paintTimer = new Timer(40, this);
+	private final Timer paintTimer = new Timer(10, this);
 
 	private final JPanel main = new JPanel(true) {
 		private static final long serialVersionUID = 1L;

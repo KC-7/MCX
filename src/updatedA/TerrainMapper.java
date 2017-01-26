@@ -10,11 +10,6 @@ public class TerrainMapper {
 	private final Random RANDOM;
 	private final int[] map;
 	private long seed;
-
-/*	public static void main(String[] args) {
-		final TerrainMapper terrainMapper = new TerrainMapper(325, 325, 0, 650, 1.0, "default", 2000);
-		terrainMapper.printMap();
-	}*/
 	
 	public TerrainMapper(int min, int max, double roughness, String seed, int start, int end, int size) {
 		this(min, max, roughness, new Random(getSeed(seed)), start, end, size);
@@ -34,8 +29,8 @@ public class TerrainMapper {
 		this.RANDOM = random;
 		map = new int[size];
 		
-		map[0] = start;
-		map[map.length - 1] = end;
+		map[0] = clamp(start);
+		map[map.length - 1] = clamp(end);
 		displaceMidpoint(0, map.length - 1);
 
 	}
@@ -53,10 +48,12 @@ public class TerrainMapper {
 		return map;
 	}
 	
+	// Returns the seed
 	public long getSeed() {
 		return seed;
 	}
 	
+	// Returns the random
 	public Random getRandom() {
 		return RANDOM;
 	}

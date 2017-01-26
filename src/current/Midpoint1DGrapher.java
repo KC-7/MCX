@@ -44,8 +44,8 @@ class Midpoint1DGrapherPanel extends JPanel implements ActionListener {
 
 	private final String CMD_GENERATE = "CMD_GENERATE";
 	private final String CMD_PAINT = "CMD_PAINT";
-	private final int WIDTH = 1300;
-	private final int HEIGHT = 625;
+	private final int WIDTH = 1300;	// 1300
+	private final int HEIGHT = 625;	// 625
 
 	private int[] map;
 	private long seed;
