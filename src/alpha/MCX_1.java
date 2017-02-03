@@ -1,4 +1,4 @@
-package alpha;
+package prealpha;
 
 import javax.swing.*;
 
