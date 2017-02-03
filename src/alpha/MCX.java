@@ -1,4 +1,4 @@
-package current;
+package alpha;
 
 import java.awt.Color;
 import java.awt.Dimension;
