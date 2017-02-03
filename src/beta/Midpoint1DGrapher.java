@@ -1,4 +1,4 @@
-package alpha;
+package beta;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import updatedA.TerrainMapper;
 
 public class Midpoint1DGrapher {
 
