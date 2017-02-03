@@ -1,4 +1,4 @@
-package updatedA;
+package beta;
 
 import java.util.Random;
 
